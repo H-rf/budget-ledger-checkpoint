@@ -1,8 +1,17 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 import db_functions as db
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    db.create_transaction_table()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 class TransactionInput(BaseModel):
     description: str

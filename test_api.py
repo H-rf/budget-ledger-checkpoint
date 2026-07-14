@@ -235,6 +235,24 @@ def test_static_routes_do_not_get_captured_by_dynamic_routes():
         }
     }
 
+def test_get_transactions_by_kind_other_than_income_or_expense_returns_400():
+    response = client.get("/transactions?kind=food")
+    assert response.status_code == 400
+    assert response.json() == {"detail":"kind must be either income or expense"}
+
+def test_get_transactions_by_id_abc_returns_422():
+    response = client.get("/transactions/abc")
+    assert response.status_code == 422
+
+def test_update_transactions_by_id_with_negative_amount_returns_400():
+    response = client.patch("/transactions/1",json={"amount":-5})
+    assert response.status_code == 400
+
+
+
+
+
+
 
 
 
